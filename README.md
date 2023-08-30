@@ -1,5 +1,5 @@
 # Camera
-[![A badge showing the current build status on bitrise. Please click to view more](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a/status.svg?token=Yt9a9JFHUAEzrS31-1qbCQ&branch=master)
+![A badge showing the current build status on bitrise. Please click to view more](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a/status.svg?token=Yt9a9JFHUAEzrS31-1qbCQ&branch=master)
 [![A badge showing the Swift Compatibility of the project.](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsamst-one%2FCamera%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/samst-one/Camera)
 [![A badge showing the platform compatibility of the project.](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsamst-one%2FCamera%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/samst-one/Camera)
 
