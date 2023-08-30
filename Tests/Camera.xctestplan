@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "0A3A49B4-1B93-4D7F-B6B6-50C1967DB4D3",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "Camera",
+          "name" : "Camera"
+        }
+      ]
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "CameraTests",
+        "name" : "CameraTests"
+      }
+    }
+  ],
+  "version" : 1
+}
