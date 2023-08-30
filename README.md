@@ -1,6 +1,5 @@
-![A image showing the current buid status on bitrise. Please click to view more](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a/status.svg?token=Yt9a9JFHUAEzrS31-1qbCQ&branch=master)
-
 # Camera
+![A image showing the current buid status on bitrise. Please click to view more](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a/status.svg?token=Yt9a9JFHUAEzrS31-1qbCQ&branch=master)
 
 A package for interacting with the cameras in iOS. Developed by [Sam Stone](https://samst.one).
 
