@@ -1,5 +1,5 @@
 # Camera
-[![A badge showing the current build status on bitrise. Please click to view more](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a/status.svg?token=Yt9a9JFHUAEzrS31-1qbCQ&branch=master)
+[![A badge showing the current build status on bitrise. Please click to view more](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a/status.svg?token=Yt9a9JFHUAEzrS31-1qbCQ&branch=main)](https://app.bitrise.io/app/902437be-6926-4073-a967-0db8438bc21a)
 [![A badge showing the Swift Compatibility of the project.](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsamst-one%2FCamera%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/samst-one/Camera)
 [![A badge showing the platform compatibility of the project.](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsamst-one%2FCamera%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/samst-one/Camera)
 
@@ -71,7 +71,7 @@ camera.start {
 7. When you're ready to take a photo, call `takePhoto` on the `Camera`. If successful, a `Data` representation of the image will be returned. If an error has occurred, then a ``PhotoCaptureError`` will be returned. 
 
 ```swift
-feature.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
     switch result {
     case .success(let data):
         let image = UIImage(data: data) 
@@ -89,18 +89,18 @@ In conclusion, to start up the camera and take a picture, the full code is below
 let camera = CameraFactory.make()
 let selectedDevice = camera.availableDevices.randomElement()
 
-let view = feature.previewView
+let view = camera.previewView
 
 do {
-    try feature.set(camera!.id)
+    try camera.set(camera!.id)
 } catch let error {
     print(error)
 }
 
 view.addSubview(view)
 
-feature.start {
-    feature.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+camera.start {
+    camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
         switch result {
         case .success(let data):
             let image = UIImage(data: data)
