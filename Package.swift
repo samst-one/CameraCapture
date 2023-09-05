@@ -3,21 +3,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "Camera",
+    name: "CameraCapture",
     platforms: [
         .iOS(.v13),
     ],
     products: [
         .library(
-            name: "Camera",
-            targets: ["Camera"]),
+            name: "CameraCapture",
+            targets: ["CameraCapture"]),
     ],
     targets: [
         .target(
-            name: "Camera",
+            name: "CameraCapture",
             dependencies: []),
         .testTarget(
-            name: "CameraTests",
-            dependencies: ["Camera"]),
+            name: "CameraCaptureTests",
+            dependencies: ["CameraCapture"]),
     ]
 )

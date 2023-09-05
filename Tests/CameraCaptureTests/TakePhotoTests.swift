@@ -1,5 +1,5 @@
 import XCTest
-@testable import Camera
+@testable import CameraCapture
 
 final class TakePhotoTests: XCTestCase {
     let session = SpyCameraSession(hasCamera: true, hasStarted: true)
@@ -11,7 +11,8 @@ final class TakePhotoTests: XCTestCase {
         super.setUp()
         controller = DefaultCameraFactory.make(dataSource: dataSource,
                                                session: session,
-                                               controller: cameraController)
+                                               controller: cameraController,
+                                               flashController: SpyFlashController())
     }
     
     func testWhenUserTakesPhoto_AndPhotoIsTakenSuccesfully_ThenCorrectDataIsReturned() {
@@ -79,7 +80,7 @@ class SpyCameraController: CameraController {
     
     var shouldReturnError: Bool = false
     var shouldReturnData: Bool = true
-
+    
     func takePhoto(with settings: CameraSettings,
                    handler: CaptureHandler) {
         handler.didCapturePhoto(shouldReturnData ? "test_data".data(using: .utf8) : nil,

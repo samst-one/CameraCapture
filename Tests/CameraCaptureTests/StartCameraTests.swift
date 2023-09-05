@@ -1,5 +1,5 @@
 import XCTest
-@testable import Camera
+@testable import CameraCapture
 
 final class StartCameraTests: XCTestCase {
     let session = SpyCameraSession(hasCamera: true, hasStarted: false)
@@ -11,7 +11,7 @@ final class StartCameraTests: XCTestCase {
         super.setUp()
         controller = DefaultCameraFactory.make(dataSource: dataSource,
                                                session: session,
-                                               controller: cameraController)
+                                               controller: cameraController, flashController: SpyFlashController())
     }
 
     func testWhenCameraIsStarted_ThenCompletionHandlerIsCalled() {

@@ -2,16 +2,16 @@ import Foundation
 
 class SetCameraUseCase {
     private let cameraSesion: CameraSesion
-    private let repo: CameraRepo
+    private let dataSource: DataSource
     
     init(cameraSesion: CameraSesion,
-         repo: CameraRepo) {
+         dataSource: DataSource) {
         self.cameraSesion = cameraSesion
-        self.repo = repo
+        self.dataSource = dataSource
     }
     
     func set(_ cameraId: String) throws {
-        guard repo.getCamera(with: cameraId) != nil else {
+        guard dataSource.getCamera(with: cameraId) != nil else {
             throw CameraSourcingError.invalidCamera
         }
         cameraSesion.removeAllInputs()

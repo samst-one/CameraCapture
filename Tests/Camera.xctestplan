@@ -13,8 +13,8 @@
       "targets" : [
         {
           "containerPath" : "container:",
-          "identifier" : "Camera",
-          "name" : "Camera"
+          "identifier" : "CameraCapture",
+          "name" : "CameraCapture"
         }
       ]
     }
@@ -23,8 +23,8 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "CameraTests",
-        "name" : "CameraTests"
+        "identifier" : "CameraCaptureTests",
+        "name" : "CameraCaptureTests"
       }
     }
   ],

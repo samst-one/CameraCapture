@@ -7,6 +7,8 @@ public struct Device {
     public let id: String
     public let type: DeviceType
     public let position: DevicePosition
+    public let hasFlash: Bool
+    public let isFlashOn: Bool
 }
 
 /**
@@ -25,6 +27,7 @@ public enum DeviceType {
     case wideAngleCamera
     case telephotoCamera
     case ultraWideCamera
+    case unspecified
 }
 
 

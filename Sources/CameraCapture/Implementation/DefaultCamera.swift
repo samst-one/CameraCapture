@@ -9,17 +9,20 @@ class DefaultCamera: Camera {
     private let retrieveCameraUseCase: RetrieveAvailableCamerasUseCase
     private let takePhotosUseCase: TakePhotoUseCase
     private let startCameraUseCase: StartCameraUseCase
+    private let setFlashStateUseCase: SetFlashStateUseCase
     
     init(previewView: UIView,
          setCameraUseCase: SetCameraUseCase,
          retrieveCameraUseCase: RetrieveAvailableCamerasUseCase,
          takePhotosUseCase: TakePhotoUseCase,
-         startCameraUseCase: StartCameraUseCase) {
+         startCameraUseCase: StartCameraUseCase,
+         setFlashStateUseCase: SetFlashStateUseCase) {
         self.previewView = previewView
         self.setCameraUseCase = setCameraUseCase
         self.retrieveCameraUseCase = retrieveCameraUseCase
         self.takePhotosUseCase = takePhotosUseCase
         self.startCameraUseCase = startCameraUseCase
+        self.setFlashStateUseCase = setFlashStateUseCase
     }
     
     func set(_ cameraId: String) throws {
@@ -30,7 +33,15 @@ class DefaultCamera: Camera {
         takePhotosUseCase.takePhoto(with: settings, completion: completion)
     }
     
+    func setFlashState(isOn: Bool) {
+        setFlashStateUseCase.setFlashState(isOn: isOn)
+    }
+    
     func start(completion: @MainActor @escaping () -> ()) {
         startCameraUseCase.start(completion: completion)
+    }
+    
+    var selectedCamera: Device? {
+        retrieveCameraUseCase.selectedCamera
     }
 }

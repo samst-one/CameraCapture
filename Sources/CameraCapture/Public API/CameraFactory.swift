@@ -19,25 +19,27 @@ public enum CameraFactory {
         let photoOutput = AVCapturePhotoOutput()
         avCaptureSession.addOutput(photoOutput)
         let previewLayer = AVCaptureVideoPreviewLayer(session: avCaptureSession)
-        previewLayer.videoGravity = .resizeAspect
-        previewLayer.connection?.videoOrientation = AVCaptureVideoOrientation.landscapeRight
+        previewLayer.videoGravity = .resizeAspectFill
         
         let cameraSession = AVCameraSession(captureSession: avCaptureSession)
         let cameraController = AVCameraController(photoOutput: photoOutput)
-        let dataSource = AVCaptureDeviceDataSource()
-        let cameraRepo = CameraRepo(dataSource: dataSource)
+        let flashController = AVFlashController(session: avCaptureSession)
+        let dataSource = AVCaptureDeviceDataSource(captureSession: avCaptureSession)
         let setCameraUseCase = SetCameraUseCase(cameraSesion: cameraSession,
-                                                repo: cameraRepo)
+                                                dataSource: dataSource)
         let previewView = PreviewView(previewLayer: previewLayer)
-        let retrieveCamerasUseCase = RetrieveAvailableCamerasUseCase(repo: cameraRepo)
+        let retrieveCamerasUseCase = RetrieveAvailableCamerasUseCase(dataSource: dataSource)
         let takePhotosUseCase = TakePhotoUseCase(controller: cameraController, session: cameraSession)
         let startCameraUseCase = StartCameraUseCase(session: cameraSession)
+        let setFlashStateUseCase = SetFlashStateUseCase(flashController: flashController,
+                                                      session: cameraSession)
         
         return DefaultCamera(previewView: previewView,
                              setCameraUseCase: setCameraUseCase,
                              retrieveCameraUseCase: retrieveCamerasUseCase,
                              takePhotosUseCase: takePhotosUseCase,
-                             startCameraUseCase: startCameraUseCase)
+                             startCameraUseCase: startCameraUseCase,
+                             setFlashStateUseCase: setFlashStateUseCase)
     }
 }
 

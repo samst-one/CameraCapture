@@ -4,6 +4,7 @@ protocol CameraSesion {
     func removeAllInputs()
     func addInput(with id: String)
     func start(completion: @MainActor @escaping () -> ())
+    var selectedCamera: Device? { get }
     var hasCamera: Bool { get }
     var hasStarted: Bool { get }
 }
@@ -17,6 +18,13 @@ class AVCameraSession: CameraSesion {
     
     var hasCamera: Bool {
         captureSession.inputs.count >= 1
+    }
+    
+    var selectedCamera: Device? {
+        guard let camera = captureSession.inputs.first as? AVCaptureDeviceInput else {
+            return nil
+        }
+        return AVCaptureDeviceToCameraAdapter.adapt(device: camera.device)
     }
     
     init(captureSession: AVCaptureSession) {

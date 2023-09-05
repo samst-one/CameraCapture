@@ -1,18 +1,20 @@
 import XCTest
-@testable import Camera
+@testable import CameraCapture
 
 enum DefaultCameraFactory {
     static func make(dataSource: DataSource,
                      session: CameraSesion,
-                     controller: CameraController) -> DefaultCamera {
-        let repo = CameraRepo(dataSource: dataSource)
+                     controller: CameraController,
+                     flashController: SpyFlashController) -> DefaultCamera {
         return DefaultCamera(previewView: UIView(),
                              setCameraUseCase: SetCameraUseCase(cameraSesion: session,
-                                                                repo: repo),
-                             retrieveCameraUseCase: RetrieveAvailableCamerasUseCase(repo: repo),
+                                                                dataSource: dataSource),
+                             retrieveCameraUseCase: RetrieveAvailableCamerasUseCase(dataSource: dataSource),
                              takePhotosUseCase: TakePhotoUseCase(controller: controller,
                                                                  session: session),
-                             startCameraUseCase: StartCameraUseCase(session: session))
+                             startCameraUseCase: StartCameraUseCase(session: session),
+                             setFlashStateUseCase: SetFlashStateUseCase(flashController: flashController,
+                                                                        session: session))
     }
 }
 
@@ -26,13 +28,16 @@ final class SetCameraTests: XCTestCase {
         super.setUp()
         controller = DefaultCameraFactory.make(dataSource: dataSource,
                                                session: session,
-                                               controller: cameraController)
+                                               controller: cameraController,
+                                               flashController: SpyFlashController())
     }
-
+    
     func testWhenUserChoosesCamera_AndRepoDoesntContainCamera_ThenCameraIsntSetOnSession_AndCorrectErrorIsThrown() {
         dataSource.camerasToReturn = [Device(id: "incorrect_test_id",
                                              type: .telephotoCamera,
-                                             position: .back)]
+                                             position: .back,
+                                             hasFlash: true,
+                                             isFlashOn: false)]
         do {
             try controller.set("test_id")
         } catch let error {
@@ -45,7 +50,9 @@ final class SetCameraTests: XCTestCase {
     func testWhenUserChoosesCamera_AndRepoDoesContainCamera_ThenCameraIsSetOnSession() {
         dataSource.camerasToReturn = [Device(id: "test_id",
                                              type: .telephotoCamera,
-                                             position: .back)]
+                                             position: .back,
+                                             hasFlash: true,
+                                             isFlashOn: false)]
         try? controller.set("test_id")
         
         XCTAssertEqual("test_id", session.chosenCameraId)
@@ -54,7 +61,9 @@ final class SetCameraTests: XCTestCase {
     func testWhenUserChoosesCamera_AndRepoDoesContainCamera_ThenAllPreviousInputsAreRemovedFromSession() {
         dataSource.camerasToReturn = [Device(id: "test_id",
                                              type: .telephotoCamera,
-                                             position: .back)]
+                                             position: .back,
+                                             hasFlash: true,
+                                             isFlashOn: true)]
         try? controller.set("test_id")
         
         XCTAssertEqual(1, session.removeAllInputsCalled)
@@ -63,7 +72,9 @@ final class SetCameraTests: XCTestCase {
     func testWhenUserChoosesCamera_AndRepoDoesntContainCamera_ThenAllPreviousInputsArentRemovedFromSession() {
         dataSource.camerasToReturn = [Device(id: "incorrect_test_id",
                                              type: .telephotoCamera,
-                                             position: .back)]
+                                             position: .back,
+                                             hasFlash: true,
+                                             isFlashOn: false)]
         try? controller.set("test_id")
         
         XCTAssertEqual(0, session.removeAllInputsCalled)
@@ -71,6 +82,7 @@ final class SetCameraTests: XCTestCase {
 }
 
 class SpyCameraSession: CameraSesion {
+    
     var hasCamera: Bool
     var hasStarted: Bool
     
@@ -94,12 +106,25 @@ class SpyCameraSession: CameraSesion {
             await completion()
         }
     }
+    
+    var spySelectedCamera: CameraCapture.Device?
+    var selectedCamera: CameraCapture.Device? {
+        return spySelectedCamera
+    }
 }
 
 class MockDataSource: DataSource {
+    func getCamera(with id: String) -> CameraCapture.Device? {
+        return camerasToReturn.first(where: { $0.id == id })
+    }
+    
+    var camerasToReturn: [Device] = []
     var cameras: [Device] {
         return camerasToReturn
     }
     
-    var camerasToReturn: [Device] = []
+    var selectedCameraToReturn: Device?
+    var selectedCamera: Device? {
+        return selectedCameraToReturn
+    }
 }
