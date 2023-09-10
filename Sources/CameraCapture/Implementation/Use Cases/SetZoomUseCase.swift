@@ -4,22 +4,22 @@ class SetZoomUseCase {
     
     private let zoomController: ZoomController
     private var observers: [ZoomObserver] = []
-    private let session: CameraSesion
+    private let dataSource: DataSource
     
-    init(zoomController: ZoomController, session: CameraSesion) {
+    init(zoomController: ZoomController, dataSource: DataSource) {
         self.zoomController = zoomController
-        self.session = session
+        self.dataSource = dataSource
     }
     
     func zoomWith(magnificationLevel: Double) throws {
-        guard let selectedCamera = session.selectedCamera else {
-            return
+        guard let selectedCamera = dataSource.selectedCamera else {
+            throw ZoomError.noSelectedCamera
         }
         
         if magnificationLevel <= (selectedCamera.maxZoom) &&
             magnificationLevel >= (selectedCamera.minZoom){
             do {
-                try zoomController.zoom(to: magnificationLevel / 0.5)
+                try zoomController.zoom(to: ZoomMultiplcationToScale.adapt(deviceType: selectedCamera.type, multiplier: magnificationLevel))
             } catch let error as ZoomError {
                 throw error
             } catch {
@@ -32,10 +32,6 @@ class SetZoomUseCase {
         for observer in observers {
             observer.didUpdateZoom(to: magnificationLevel)
         }
-    }
-    
-    func zoomWith(scale: Double) throws {
-        try zoomWith(magnificationLevel: scale * 0.5)
     }
     
     func add(observer: ZoomObserver) {

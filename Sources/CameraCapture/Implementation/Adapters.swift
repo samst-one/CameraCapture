@@ -1,5 +1,31 @@
 import AVFoundation
 
+enum ZoomScaleToMultiplication {
+    static func adapt(deviceType: DeviceType, scale: Double) -> Double {
+        switch deviceType {
+        case .dualWideCamera, .tripleCamera:
+            return scale * 0.5
+        case .dualCamera:
+            return scale * 1.11
+        default:
+            return scale * 0.5
+        }
+    }
+}
+
+enum ZoomMultiplcationToScale {
+    static func adapt(deviceType: DeviceType, multiplier: Double) -> Double {
+        switch deviceType {
+        case .dualWideCamera, .tripleCamera:
+            return multiplier / 0.5
+        case .dualCamera:
+            return multiplier / 1.11
+        default:
+            return multiplier / 0.5
+        }
+    }
+}
+
 enum AVCaptureDeviceToCameraAdapter {
     
     static func adapt(device: AVCaptureDevice) -> Device {
@@ -8,16 +34,17 @@ enum AVCaptureDeviceToCameraAdapter {
         switch device.deviceType {
         case .builtInDualWideCamera, .builtInTripleCamera:
             zoomOptions.append(0.5)
-            zoomOptions.append(contentsOf: device.virtualDeviceSwitchOverVideoZoomFactors.map { $0.doubleValue * 0.5 })
             break
         case .builtInDualCamera:
             zoomOptions.append(1.0)
-            zoomOptions.append(contentsOf: device.virtualDeviceSwitchOverVideoZoomFactors.map { $0.doubleValue * 1.11 })
             break
         default:
             break
         }
         
+        zoomOptions.append(contentsOf: device.virtualDeviceSwitchOverVideoZoomFactors.map { ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType),
+                                                                                                                            scale: $0.doubleValue) })
+
         return Device(id: device.uniqueID,
                       type: self.adapt(device: device.deviceType),
                       position: self.adapt(position: device.position),

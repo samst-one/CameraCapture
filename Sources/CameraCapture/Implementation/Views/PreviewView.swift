@@ -5,15 +5,12 @@ class PreviewView: UIView {
 
     private let previewLayer: AVCaptureVideoPreviewLayer
     private let presenter: Presenter
-    private let viewModel: ViewModel
     private var pinchRecognizer: UIPinchGestureRecognizer!
     
     init(previewLayer: AVCaptureVideoPreviewLayer,
-         presenter: Presenter,
-         viewModel: ViewModel) {
+         presenter: Presenter) {
         self.previewLayer = previewLayer
         self.presenter = presenter
-        self.viewModel = viewModel
         
         super.init(frame: CGRect.zero)
         layer.addSublayer(previewLayer)
@@ -49,7 +46,7 @@ class PreviewView: UIView {
     
     @IBAction func pinch(_ sender: UIPinchGestureRecognizer) {
         if sender.state == .changed {
-            presenter.didZoomTo(sender.scale, previousZoom: viewModel.currentZoom)
+            presenter.didZoomTo(sender.scale)
             pinchRecognizer.scale = 1
         }
     }

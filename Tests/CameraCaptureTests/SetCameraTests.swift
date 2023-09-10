@@ -16,7 +16,7 @@ enum DefaultCameraFactory {
                              startCameraUseCase: StartCameraUseCase(session: session),
                              setFlashStateUseCase: SetFlashStateUseCase(flashController: flashController,
                                                                         session: session),
-                             setZoomUseCase: SetZoomUseCase(zoomController: zoomController, session: session))
+                             setZoomUseCase: SetZoomUseCase(zoomController: zoomController, dataSource: dataSource))
     }
 }
 

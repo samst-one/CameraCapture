@@ -104,9 +104,3 @@ class SpyFlashController: FlashController {
         flashOnDeviceId = deviceId
     }
 }
-
-class SpyZoomController: ZoomController {
-    func zoom(to value: Double) throws {
-        
-    }
-}

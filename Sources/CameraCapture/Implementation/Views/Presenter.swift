@@ -1,7 +1,7 @@
 import Foundation
 
 protocol Presenter {
-    func didZoomTo(_ scale: CGFloat, previousZoom: Double)
+    func didZoomTo(_ scale: CGFloat)
 }
 
 class DefaultPresenter: Presenter {
@@ -15,14 +15,11 @@ class DefaultPresenter: Presenter {
         self.retrieveSelectedCameras = retrieveSelectedCameras
     }
 
-    func didZoomTo(_ scale: CGFloat, previousZoom: Double) {
+    func didZoomTo(_ scale: CGFloat) {
         guard let selectedCamera = retrieveSelectedCameras.selectedCamera else {
             return
         }
-        do {
-            try setZoomUseCase.zoomWith(scale: scale * (selectedCamera.currentZoom / 0.5))
-        } catch let error {
-            print(error.localizedDescription + "\(scale)")
-        }
+        try? setZoomUseCase.zoomWith(magnificationLevel: ZoomScaleToMultiplication.adapt(deviceType: selectedCamera.type,
+                                                                                         scale: scale * (selectedCamera.currentZoom / 0.5)))
     }
 }

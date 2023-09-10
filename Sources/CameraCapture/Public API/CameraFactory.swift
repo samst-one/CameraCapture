@@ -26,17 +26,15 @@ public enum CameraFactory {
         let flashController = AVFlashController(session: avCaptureSession)
         let dataSource = AVCaptureDeviceDataSource(captureSession: avCaptureSession)
         let zoomController = AVZoomController(session: avCaptureSession)
-        let viewModel = ViewModel(currentZoom: 1)
         let setZoomUseCase = SetZoomUseCase(zoomController: zoomController,
-                                            session: cameraSession)
+                                            dataSource: dataSource)
         let retrieveCamerasUseCase = RetrieveAvailableCamerasUseCase(dataSource: dataSource)
         let presenter = DefaultPresenter(setZoomUseCase: setZoomUseCase,
                                          retrieveSelectedCameras: retrieveCamerasUseCase)
         let setCameraUseCase = SetCameraUseCase(cameraSesion: cameraSession,
                                                 dataSource: dataSource)
         let previewView = PreviewView(previewLayer: previewLayer,
-                                      presenter: presenter,
-                                      viewModel: viewModel)
+                                      presenter: presenter)
         let takePhotosUseCase = TakePhotoUseCase(controller: cameraController, session: cameraSession)
         let startCameraUseCase = StartCameraUseCase(session: cameraSession)
         let setFlashStateUseCase = SetFlashStateUseCase(flashController: flashController,
