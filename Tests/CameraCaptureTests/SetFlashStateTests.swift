@@ -12,7 +12,8 @@ class SetFlashStateTests: XCTestCase {
         controller = DefaultCameraFactory.make(dataSource: MockDataSource(),
                                                session: session,
                                                controller: SpyCameraController(),
-                                               flashController: flashController)
+                                               flashController: flashController,
+                                               zoomController: SpyZoomController())
     }
     
     func testWhenUserTurnsFlashOn_AndThereIsNoSelectedCamera_ThenFlashIsntTurnedOn() {
@@ -26,7 +27,11 @@ class SetFlashStateTests: XCTestCase {
                                            type: .telephotoCamera,
                                            position: .back,
                                            hasFlash: true,
-                                           isFlashOn: false)
+                                           isFlashOn: false,
+                                           zoomOptions: [0.5, 1, 2],
+                                           currentZoom: 1.0,
+                                           maxZoom: 10,
+                                           minZoom: 0.5)
         
         controller.setFlashState(isOn: true)
         
@@ -38,7 +43,11 @@ class SetFlashStateTests: XCTestCase {
                                            type: .telephotoCamera,
                                            position: .back,
                                            hasFlash: false,
-                                           isFlashOn: false)
+                                           isFlashOn: false,
+                                           zoomOptions: [0.5, 1, 2],
+                                           currentZoom: 1.0,
+                                           maxZoom: 10,
+                                           minZoom: 0.5)
         
         controller.setFlashState(isOn: true)
         
@@ -50,7 +59,11 @@ class SetFlashStateTests: XCTestCase {
                                            type: .telephotoCamera,
                                            position: .back,
                                            hasFlash: true,
-                                           isFlashOn: true)
+                                           isFlashOn: true,
+                                           zoomOptions: [0.5, 1, 2],
+                                           currentZoom: 1.0,
+                                           maxZoom: 10,
+                                           minZoom: 0.5)
         
         controller.setFlashState(isOn: false)
         
@@ -62,7 +75,11 @@ class SetFlashStateTests: XCTestCase {
                                            type: .telephotoCamera,
                                            position: .back,
                                            hasFlash: false,
-                                           isFlashOn: false)
+                                           isFlashOn: false,
+                                           zoomOptions: [0.5, 1, 2],
+                                           currentZoom: 1.0,
+                                           maxZoom: 10,
+                                           minZoom: 0.5)
         
         controller.setFlashState(isOn: false)
         
@@ -85,5 +102,11 @@ class SpyFlashController: FlashController {
     var flashOnDeviceId: String?
     func turnOnFlash(for deviceId: String) {
         flashOnDeviceId = deviceId
+    }
+}
+
+class SpyZoomController: ZoomController {
+    func zoom(to value: Double) throws {
+        
     }
 }

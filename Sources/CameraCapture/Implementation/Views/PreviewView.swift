@@ -4,11 +4,22 @@ import AVFoundation
 class PreviewView: UIView {
 
     private let previewLayer: AVCaptureVideoPreviewLayer
+    private let presenter: Presenter
+    private let viewModel: ViewModel
+    private var pinchRecognizer: UIPinchGestureRecognizer!
     
-    init(previewLayer: AVCaptureVideoPreviewLayer) {
+    init(previewLayer: AVCaptureVideoPreviewLayer,
+         presenter: Presenter,
+         viewModel: ViewModel) {
         self.previewLayer = previewLayer
+        self.presenter = presenter
+        self.viewModel = viewModel
+        
         super.init(frame: CGRect.zero)
         layer.addSublayer(previewLayer)
+        
+        pinchRecognizer = UIPinchGestureRecognizer(target: self, action:#selector(pinch(_:)))
+        self.addGestureRecognizer(pinchRecognizer)
     }
     
     required init?(coder: NSCoder) {
@@ -33,6 +44,13 @@ class PreviewView: UIView {
         case .landscapeLeft: return .landscapeLeft
         case .portrait: return .portrait
         default: return nil
+        }
+    }
+    
+    @IBAction func pinch(_ sender: UIPinchGestureRecognizer) {
+        if sender.state == .changed {
+            presenter.didZoomTo(sender.scale, previousZoom: viewModel.currentZoom)
+            pinchRecognizer.scale = 1
         }
     }
 }

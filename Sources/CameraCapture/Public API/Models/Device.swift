@@ -1,5 +1,6 @@
 import Foundation
 
+
 /**
     A device that can be used to take a picture with.
 */
@@ -9,6 +10,10 @@ public struct Device {
     public let position: DevicePosition
     public let hasFlash: Bool
     public let isFlashOn: Bool
+    public let zoomOptions: [Double]
+    public let currentZoom: Double
+    public let maxZoom: Double
+    public let minZoom: Double
 }
 
 /**
@@ -24,10 +29,11 @@ public enum DevicePosition {
     The type of device. Useful for knowing which camera you're using.
 */
 public enum DeviceType {
+    case tripleCamera
+    case dualCamera
+    case dualWideCamera
     case wideAngleCamera
     case telephotoCamera
     case ultraWideCamera
     case unspecified
 }
-
-

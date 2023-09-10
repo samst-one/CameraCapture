@@ -11,7 +11,9 @@ final class StartCameraTests: XCTestCase {
         super.setUp()
         controller = DefaultCameraFactory.make(dataSource: dataSource,
                                                session: session,
-                                               controller: cameraController, flashController: SpyFlashController())
+                                               controller: cameraController,
+                                               flashController: SpyFlashController(),
+                                               zoomController: SpyZoomController())
     }
 
     func testWhenCameraIsStarted_ThenCompletionHandlerIsCalled() {

@@ -12,7 +12,8 @@ final class TakePhotoTests: XCTestCase {
         controller = DefaultCameraFactory.make(dataSource: dataSource,
                                                session: session,
                                                controller: cameraController,
-                                               flashController: SpyFlashController())
+                                               flashController: SpyFlashController(),
+                                               zoomController: SpyZoomController())
     }
     
     func testWhenUserTakesPhoto_AndPhotoIsTakenSuccesfully_ThenCorrectDataIsReturned() {

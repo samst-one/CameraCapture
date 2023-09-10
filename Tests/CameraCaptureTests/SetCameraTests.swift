@@ -5,7 +5,8 @@ enum DefaultCameraFactory {
     static func make(dataSource: DataSource,
                      session: CameraSesion,
                      controller: CameraController,
-                     flashController: SpyFlashController) -> DefaultCamera {
+                     flashController: FlashController,
+                     zoomController: ZoomController) -> DefaultCamera {
         return DefaultCamera(previewView: UIView(),
                              setCameraUseCase: SetCameraUseCase(cameraSesion: session,
                                                                 dataSource: dataSource),
@@ -14,7 +15,8 @@ enum DefaultCameraFactory {
                                                                  session: session),
                              startCameraUseCase: StartCameraUseCase(session: session),
                              setFlashStateUseCase: SetFlashStateUseCase(flashController: flashController,
-                                                                        session: session))
+                                                                        session: session),
+                             setZoomUseCase: SetZoomUseCase(zoomController: zoomController, session: session))
     }
 }
 
@@ -29,7 +31,8 @@ final class SetCameraTests: XCTestCase {
         controller = DefaultCameraFactory.make(dataSource: dataSource,
                                                session: session,
                                                controller: cameraController,
-                                               flashController: SpyFlashController())
+                                               flashController: SpyFlashController(),
+                                               zoomController: SpyZoomController())
     }
     
     func testWhenUserChoosesCamera_AndRepoDoesntContainCamera_ThenCameraIsntSetOnSession_AndCorrectErrorIsThrown() {
@@ -37,7 +40,11 @@ final class SetCameraTests: XCTestCase {
                                              type: .telephotoCamera,
                                              position: .back,
                                              hasFlash: true,
-                                             isFlashOn: false)]
+                                             isFlashOn: false,
+                                             zoomOptions: [0.5, 1, 2],
+                                             currentZoom: 1.0,
+                                             maxZoom: 10,
+                                             minZoom: 0.5)]
         do {
             try controller.set("test_id")
         } catch let error {
@@ -52,7 +59,11 @@ final class SetCameraTests: XCTestCase {
                                              type: .telephotoCamera,
                                              position: .back,
                                              hasFlash: true,
-                                             isFlashOn: false)]
+                                             isFlashOn: false,
+                                             zoomOptions: [0.5, 1, 2],
+                                             currentZoom: 1.0,
+                                             maxZoom: 10,
+                                             minZoom: 0.5)]
         try? controller.set("test_id")
         
         XCTAssertEqual("test_id", session.chosenCameraId)
@@ -63,7 +74,11 @@ final class SetCameraTests: XCTestCase {
                                              type: .telephotoCamera,
                                              position: .back,
                                              hasFlash: true,
-                                             isFlashOn: true)]
+                                             isFlashOn: true,
+                                             zoomOptions: [0.5, 1, 2],
+                                             currentZoom: 1.0,
+                                             maxZoom: 10,
+                                             minZoom: 0.5)]
         try? controller.set("test_id")
         
         XCTAssertEqual(1, session.removeAllInputsCalled)
@@ -74,7 +89,11 @@ final class SetCameraTests: XCTestCase {
                                              type: .telephotoCamera,
                                              position: .back,
                                              hasFlash: true,
-                                             isFlashOn: false)]
+                                             isFlashOn: false,
+                                             zoomOptions: [0.5, 1, 2],
+                                             currentZoom: 1.0,
+                                             maxZoom: 10,
+                                             minZoom: 0.5)]
         try? controller.set("test_id")
         
         XCTAssertEqual(0, session.removeAllInputsCalled)

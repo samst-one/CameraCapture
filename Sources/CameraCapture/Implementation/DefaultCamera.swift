@@ -10,19 +10,22 @@ class DefaultCamera: Camera {
     private let takePhotosUseCase: TakePhotoUseCase
     private let startCameraUseCase: StartCameraUseCase
     private let setFlashStateUseCase: SetFlashStateUseCase
+    private let setZoomUseCase: SetZoomUseCase
     
     init(previewView: UIView,
          setCameraUseCase: SetCameraUseCase,
          retrieveCameraUseCase: RetrieveAvailableCamerasUseCase,
          takePhotosUseCase: TakePhotoUseCase,
          startCameraUseCase: StartCameraUseCase,
-         setFlashStateUseCase: SetFlashStateUseCase) {
+         setFlashStateUseCase: SetFlashStateUseCase,
+         setZoomUseCase: SetZoomUseCase) {
         self.previewView = previewView
         self.setCameraUseCase = setCameraUseCase
         self.retrieveCameraUseCase = retrieveCameraUseCase
         self.takePhotosUseCase = takePhotosUseCase
         self.startCameraUseCase = startCameraUseCase
         self.setFlashStateUseCase = setFlashStateUseCase
+        self.setZoomUseCase = setZoomUseCase
     }
     
     func set(_ cameraId: String) throws {
@@ -43,5 +46,13 @@ class DefaultCamera: Camera {
     
     var selectedCamera: Device? {
         retrieveCameraUseCase.selectedCamera
+    }
+    
+    func zoom(to value: Double) throws {
+        try setZoomUseCase.zoomWith(magnificationLevel: value)
+    }
+    
+    func add(zoomObserver: ZoomObserver) {
+        setZoomUseCase.add(observer: zoomObserver)
     }
 }

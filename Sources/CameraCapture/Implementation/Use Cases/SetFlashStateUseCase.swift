@@ -12,11 +12,7 @@ class SetFlashStateUseCase {
     }
     
     func setFlashState(isOn: Bool) {
-        if isOn {
-            turnOn()
-        } else {
-            turnOff()
-        }
+        isOn ? turnOn() : turnOff()
     }
     
     private func turnOff() {

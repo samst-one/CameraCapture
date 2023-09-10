@@ -9,18 +9,22 @@ protocol DataSource {
 class AVCaptureDeviceDataSource: DataSource {
     
     private let captureSession: AVCaptureSession
-
+    
     init(captureSession: AVCaptureSession) {
         self.captureSession = captureSession
     }
     
     var cameras: [Device] {
-        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera,
-                                                                                    .builtInTelephotoCamera,
-                                                                                    .builtInUltraWideCamera],
+        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [
+            .builtInDualCamera,
+            .builtInDualWideCamera,
+            .builtInTripleCamera,
+            .builtInWideAngleCamera,
+            .builtInTelephotoCamera,
+            .builtInUltraWideCamera],
                                                                       mediaType: AVMediaType.video,
                                                                       position: .unspecified)
-        let cameras: [Device] = deviceDiscoverySession.devices.compactMap { device in
+        let cameras = deviceDiscoverySession.devices.compactMap { device in
             return AVCaptureDeviceToCameraAdapter.adapt(device: device)
         }
         

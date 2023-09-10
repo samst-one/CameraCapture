@@ -47,7 +47,7 @@ public protocol Camera {
      This function attempts to take a photo and returns either an error or the data of the image captured. The date can be used to turn into a `UIImage` with the below:
      
      let image = UIImage(data: data)
-     .
+     
      - Parameters:
      - settings:  Used to provide settings for the photo. Refer to ``CameraSettings`` for more information.
      - completion:  Called when the photo has been taken. Returns a `Result` type which either includes the `data` of the image in the case of a succesful photo being taken, or an `PhotoCaptureError` if an error has occured.
@@ -57,4 +57,8 @@ public protocol Camera {
     func setFlashState(isOn: Bool)
     
     var selectedCamera: Device? { get }
+    
+    func zoom(to value: Double) throws
+    
+    func add(zoomObserver: ZoomObserver)
 }

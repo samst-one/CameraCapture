@@ -25,10 +25,18 @@ public enum CameraFactory {
         let cameraController = AVCameraController(photoOutput: photoOutput)
         let flashController = AVFlashController(session: avCaptureSession)
         let dataSource = AVCaptureDeviceDataSource(captureSession: avCaptureSession)
+        let zoomController = AVZoomController(session: avCaptureSession)
+        let viewModel = ViewModel(currentZoom: 1)
+        let setZoomUseCase = SetZoomUseCase(zoomController: zoomController,
+                                            session: cameraSession)
+        let retrieveCamerasUseCase = RetrieveAvailableCamerasUseCase(dataSource: dataSource)
+        let presenter = DefaultPresenter(setZoomUseCase: setZoomUseCase,
+                                         retrieveSelectedCameras: retrieveCamerasUseCase)
         let setCameraUseCase = SetCameraUseCase(cameraSesion: cameraSession,
                                                 dataSource: dataSource)
-        let previewView = PreviewView(previewLayer: previewLayer)
-        let retrieveCamerasUseCase = RetrieveAvailableCamerasUseCase(dataSource: dataSource)
+        let previewView = PreviewView(previewLayer: previewLayer,
+                                      presenter: presenter,
+                                      viewModel: viewModel)
         let takePhotosUseCase = TakePhotoUseCase(controller: cameraController, session: cameraSession)
         let startCameraUseCase = StartCameraUseCase(session: cameraSession)
         let setFlashStateUseCase = SetFlashStateUseCase(flashController: flashController,
@@ -39,7 +47,8 @@ public enum CameraFactory {
                              retrieveCameraUseCase: retrieveCamerasUseCase,
                              takePhotosUseCase: takePhotosUseCase,
                              startCameraUseCase: startCameraUseCase,
-                             setFlashStateUseCase: setFlashStateUseCase)
+                             setFlashStateUseCase: setFlashStateUseCase,
+                             setZoomUseCase: setZoomUseCase)
     }
 }
 
