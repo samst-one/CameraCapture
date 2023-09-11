@@ -8,7 +8,7 @@ enum ZoomScaleToMultiplication {
         case .dualCamera:
             return scale * 1.11
         default:
-            return scale * 0.5
+            return scale
         }
     }
 }
@@ -21,7 +21,7 @@ enum ZoomMultiplcationToScale {
         case .dualCamera:
             return multiplier / 1.11
         default:
-            return multiplier / 0.5
+            return multiplier
         }
     }
 }
@@ -44,6 +44,9 @@ enum AVCaptureDeviceToCameraAdapter {
         
         zoomOptions.append(contentsOf: device.virtualDeviceSwitchOverVideoZoomFactors.map { ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType),
                                                                                                                             scale: $0.doubleValue) })
+        if device.deviceType == .builtInUltraWideCamera && device.position == .front {
+            print("here")
+        }
 
         return Device(id: device.uniqueID,
                       type: self.adapt(device: device.deviceType),
@@ -51,9 +54,9 @@ enum AVCaptureDeviceToCameraAdapter {
                       hasFlash: device.hasTorch,
                       isFlashOn: device.isTorchActive,
                       zoomOptions: zoomOptions,
-                      currentZoom: device.videoZoomFactor * 0.5,
-                      maxZoom: min(device.maxAvailableVideoZoomFactor * 0.5, 10),
-                      minZoom: device.minAvailableVideoZoomFactor * 0.5)
+                      currentZoom: ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.videoZoomFactor),
+                      maxZoom: min(ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.maxAvailableVideoZoomFactor), 10),
+                      minZoom: ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.minAvailableVideoZoomFactor))
     }
     
     private static func adapt(device: AVCaptureDevice.DeviceType?) -> DeviceType {

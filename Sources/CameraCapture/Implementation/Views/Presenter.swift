@@ -20,6 +20,7 @@ class DefaultPresenter: Presenter {
             return
         }
         try? setZoomUseCase.zoomWith(magnificationLevel: ZoomScaleToMultiplication.adapt(deviceType: selectedCamera.type,
-                                                                                         scale: scale * (selectedCamera.currentZoom / 0.5)))
+                                                                                         scale: scale * (ZoomMultiplcationToScale.adapt(deviceType: selectedCamera.type,
+                                                                                                                                        multiplier: selectedCamera.currentZoom))))
     }
 }
