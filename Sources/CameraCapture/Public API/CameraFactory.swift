@@ -19,7 +19,7 @@ public enum CameraFactory {
         let photoOutput = AVCapturePhotoOutput()
         avCaptureSession.addOutput(photoOutput)
         let previewLayer = AVCaptureVideoPreviewLayer(session: avCaptureSession)
-        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspect
         
         let cameraSession = AVCameraSession(captureSession: avCaptureSession)
         let cameraController = AVCameraController(photoOutput: photoOutput)
@@ -30,7 +30,8 @@ public enum CameraFactory {
                                             dataSource: dataSource)
         let retrieveCamerasUseCase = RetrieveAvailableCamerasUseCase(dataSource: dataSource)
         let presenter = DefaultPresenter(setZoomUseCase: setZoomUseCase,
-                                         retrieveSelectedCameras: retrieveCamerasUseCase)
+                                         retrieveSelectedCameras: retrieveCamerasUseCase,
+        focusUseCase: FocusUseCase(focusController: AVFocusController(session: avCaptureSession)))
         let setCameraUseCase = SetCameraUseCase(cameraSesion: cameraSession,
                                                 dataSource: dataSource)
         let previewView = PreviewView(previewLayer: previewLayer,

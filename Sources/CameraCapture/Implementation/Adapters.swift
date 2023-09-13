@@ -44,9 +44,6 @@ enum AVCaptureDeviceToCameraAdapter {
         
         zoomOptions.append(contentsOf: device.virtualDeviceSwitchOverVideoZoomFactors.map { ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType),
                                                                                                                             scale: $0.doubleValue) })
-        if device.deviceType == .builtInUltraWideCamera && device.position == .front {
-            print("here")
-        }
 
         return Device(id: device.uniqueID,
                       type: self.adapt(device: device.deviceType),

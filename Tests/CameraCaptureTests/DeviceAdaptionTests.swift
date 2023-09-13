@@ -16,5 +16,4 @@ class AdaptionTests: XCTestCase {
         XCTAssertEqual(ZoomMultiplcationToScale.adapt(deviceType: .dualWideCamera, multiplier: 2), 4)
         XCTAssertEqual(ZoomMultiplcationToScale.adapt(deviceType: .wideAngleCamera, multiplier: 2), 2)
     }
-    
 }
