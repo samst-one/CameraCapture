@@ -3,23 +3,11 @@ import XCTest
 
 class ZoomTests: XCTestCase {
     
-    let session = SpyCameraSession(hasCamera: true, hasStarted: true)
-    var controller: DefaultCamera!
-    let zoomController = SpyZoomController()
-    let dataSource = MockDataSource()
-    
-    override func setUp() {
-        super.setUp()
-        controller = DefaultCameraFactory.make(dataSource: dataSource,
-                                               session: session,
-                                               controller: SpyCameraController(),
-                                               flashController: SpyFlashController(),
-                                               zoomController: zoomController)
-    }
+    let system = System()
     
     func testWhenNoCameraIsSelected_ThenZoomFails() {
         do {
-            try controller.zoom(to: 2)
+            try system.camera.zoom(to: 2)
         } catch let error as ZoomError {
             XCTAssertEqual(error, .noSelectedCamera)
             return
@@ -32,52 +20,52 @@ class ZoomTests: XCTestCase {
     }
     
     func testWhenCameraIsSelected_AndZoomWithinBoundariesOfDevice_ThenZoomIsSuccesful() {
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
         
-        try? controller.zoom(to: 2)
+        try? system.camera.zoom(to: 2)
         
-        XCTAssertEqual(zoomController.zoomValue, 4)
+        XCTAssertEqual(system.zoomController.zoomValue, 4)
     }
     
     func testWhenZoomIsSuccesful_ThenObserversAreNotified() {
         let zoomObserver = SpyZoomObserver()
         
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
-        controller.add(zoomObserver: zoomObserver)
-        try? controller.zoom(to: 2)
-
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
+        system.camera.add(zoomObserver: zoomObserver)
+        try? system.camera.zoom(to: 2)
+        
         XCTAssertEqual(zoomObserver.magnificationValue, 2)
     }
     
     func testWhenCameraIsSelected_AndZoomBelowMinimumZoom_ThenZoomReturnError() {
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
         
         do {
-            try controller.zoom(to: 0.4)
+            try system.camera.zoom(to: 0.4)
         } catch let error as ZoomError {
             XCTAssertEqual(error, .zoomOutsideOfBounds)
             return
@@ -90,18 +78,18 @@ class ZoomTests: XCTestCase {
     }
     
     func testWhenCameraIsSelected_AndZoomIsAboveMaximumZoom_ThenZoomReturnError() {
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
-                
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
+        
         do {
-            try controller.zoom(to: 11)
+            try system.camera.zoom(to: 11)
         } catch let error as ZoomError {
             XCTAssertEqual(error, .zoomOutsideOfBounds)
             return
@@ -114,19 +102,19 @@ class ZoomTests: XCTestCase {
     }
     
     func testWhenZoomFails_AndZoomErrorIsThrown_ThenZoomErrorIsReturned() {
-        zoomController.errorToThrow = ZoomError.zoomOutsideOfBounds
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
-                
+        system.zoomController.errorToThrow = ZoomError.zoomOutsideOfBounds
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
+        
         do {
-            try controller.zoom(to: 3)
+            try system.camera.zoom(to: 3)
         } catch let error as ZoomError {
             XCTAssertEqual(error, .zoomOutsideOfBounds)
             return
@@ -139,19 +127,19 @@ class ZoomTests: XCTestCase {
     }
     
     func testWhenZoomFails_AndUnknownErrorIsReturned_ThenUnknownZoomErrorIsReturned() {
-        zoomController.errorToThrow = FakeError.fakeError
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
-                
+        system.zoomController.errorToThrow = FakeError.fakeError
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
+        
         do {
-            try controller.zoom(to: 3)
+            try system.camera.zoom(to: 3)
         } catch let error as ZoomError {
             XCTAssertEqual(error, .unknownError)
             return
@@ -164,31 +152,25 @@ class ZoomTests: XCTestCase {
     }
     
     func testWhenUserZoomsInOnView_AndDeviceIsSelected_ThenZoomIsSuccesful() {
-        dataSource.selectedCameraToReturn = Device(id: "1",
-                                                   type: .tripleCamera,
-                                                   position: .back,
-                                                   hasFlash: false,
-                                                   isFlashOn: true,
-                                                   zoomOptions: [],
-                                                   currentZoom: 1.0,
-                                                   maxZoom: 10,
-                                                   minZoom: 0.5)
+        system.dataSource.selectedCameraToReturn = Device(id: "1",
+                                                          type: .tripleCamera,
+                                                          position: .back,
+                                                          hasFlash: false,
+                                                          isFlashOn: true,
+                                                          zoomOptions: [],
+                                                          currentZoom: 1.0,
+                                                          maxZoom: 10,
+                                                          minZoom: 0.5)
         
-        let setZoomUseCase = SetZoomUseCase(zoomController: zoomController, dataSource: dataSource)
-        let presenter = DefaultPresenter(setZoomUseCase: setZoomUseCase, retrieveSelectedCameras: RetrieveAvailableCamerasUseCase(dataSource: dataSource))
+        system.presenter.didZoomTo(2.4)
         
-        presenter.didZoomTo(2.4)
-        
-        XCTAssertEqual(zoomController.zoomValue, 4.8)
+        XCTAssertEqual(system.zoomController.zoomValue, 4.8)
     }
     
     func testWhenUserZoomsInOnView_AndDeviceIsntSelected_ThenZoomIsSuccesful() {
-        let setZoomUseCase = SetZoomUseCase(zoomController: zoomController, dataSource: dataSource)
-        let presenter = DefaultPresenter(setZoomUseCase: setZoomUseCase, retrieveSelectedCameras: RetrieveAvailableCamerasUseCase(dataSource: dataSource))
+        system.presenter.didZoomTo(2.4)
         
-        presenter.didZoomTo(2.4)
-        
-        XCTAssertEqual(zoomController.zoomValue, 0)
+        XCTAssertEqual(system.zoomController.zoomValue, 0)
     }
 }
 

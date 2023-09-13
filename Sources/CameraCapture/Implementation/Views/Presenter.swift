@@ -3,6 +3,7 @@ import Foundation
 protocol Presenter {
     func didZoomTo(_ scale: CGFloat)
     func didFocus(at point: CGPoint)
+    func didSetCamera()
 }
 
 class DefaultPresenter: Presenter {
@@ -10,6 +11,7 @@ class DefaultPresenter: Presenter {
     private let setZoomUseCase: SetZoomUseCase
     private let retrieveSelectedCameras: RetrieveAvailableCamerasUseCase
     private let focusUseCase: FocusUseCase
+    private var view: Viewable?
     
     init(setZoomUseCase: SetZoomUseCase,
          retrieveSelectedCameras: RetrieveAvailableCamerasUseCase,
@@ -17,6 +19,10 @@ class DefaultPresenter: Presenter {
         self.setZoomUseCase = setZoomUseCase
         self.retrieveSelectedCameras = retrieveSelectedCameras
         self.focusUseCase = focusUseCase
+    }
+    
+    func set(_ view: Viewable) {
+        self.view = view
     }
 
     func didZoomTo(_ scale: CGFloat) {
@@ -30,5 +36,9 @@ class DefaultPresenter: Presenter {
     
     func didFocus(at point: CGPoint) {
         focusUseCase.focus(at: point)
+    }
+    
+    func didSetCamera() {
+        view?.didSetCamera()
     }
 }

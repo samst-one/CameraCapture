@@ -28,15 +28,19 @@ class PreviewView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    func setupOrientation() {
         guard let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation else {
             return
         }
         let videoOrientation: AVCaptureVideoOrientation = videoOrientation(viewOrientation: statusBarOrientation) ?? .portrait
-        
+            
         previewLayer.frame = layer.bounds
         previewLayer.connection?.videoOrientation = videoOrientation
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupOrientation()
     }
     
     private func videoOrientation(viewOrientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation? {
@@ -128,5 +132,14 @@ class PreviewView: UIView {
         box.opacity = 0
         return box
     }()
-    
+}
+
+extension PreviewView: Viewable {
+    func didSetCamera() {
+        setupOrientation()
+    }
+}
+
+protocol Viewable {
+    func didSetCamera()
 }

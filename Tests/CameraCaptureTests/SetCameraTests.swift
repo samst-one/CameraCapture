@@ -1,102 +1,87 @@
 import XCTest
 @testable import CameraCapture
 
-enum DefaultCameraFactory {
-    static func make(dataSource: DataSource,
-                     session: CameraSesion,
-                     controller: CameraController,
-                     flashController: FlashController,
-                     zoomController: ZoomController) -> DefaultCamera {
-        return DefaultCamera(previewView: UIView(),
-                             setCameraUseCase: SetCameraUseCase(cameraSesion: session,
-                                                                dataSource: dataSource),
-                             retrieveCameraUseCase: RetrieveAvailableCamerasUseCase(dataSource: dataSource),
-                             takePhotosUseCase: TakePhotoUseCase(controller: controller,
-                                                                 session: session),
-                             startCameraUseCase: StartCameraUseCase(session: session),
-                             setFlashStateUseCase: SetFlashStateUseCase(flashController: flashController,
-                                                                        session: session),
-                             setZoomUseCase: SetZoomUseCase(zoomController: zoomController, dataSource: dataSource))
-    }
-}
-
 final class SetCameraTests: XCTestCase {
-    let session = SpyCameraSession(hasCamera: true, hasStarted: true)
-    let dataSource = MockDataSource()
-    let cameraController = SpyCameraController()
-    var controller: DefaultCamera!
     
-    override func setUp() {
-        super.setUp()
-        controller = DefaultCameraFactory.make(dataSource: dataSource,
-                                               session: session,
-                                               controller: cameraController,
-                                               flashController: SpyFlashController(),
-                                               zoomController: SpyZoomController())
-    }
+    let system = System()
     
     func testWhenUserChoosesCamera_AndRepoDoesntContainCamera_ThenCameraIsntSetOnSession_AndCorrectErrorIsThrown() {
-        dataSource.camerasToReturn = [Device(id: "incorrect_test_id",
-                                             type: .telephotoCamera,
-                                             position: .back,
-                                             hasFlash: true,
-                                             isFlashOn: false,
-                                             zoomOptions: [0.5, 1, 2],
-                                             currentZoom: 1.0,
-                                             maxZoom: 10,
-                                             minZoom: 0.5)]
+        system.dataSource.camerasToReturn = [Device(id: "incorrect_test_id",
+                                                    type: .telephotoCamera,
+                                                    position: .back,
+                                                    hasFlash: true,
+                                                    isFlashOn: false,
+                                                    zoomOptions: [0.5, 1, 2],
+                                                    currentZoom: 1.0,
+                                                    maxZoom: 10,
+                                                    minZoom: 0.5)]
         do {
-            try controller.set("test_id")
+            try system.camera.set("test_id")
         } catch let error {
             XCTAssertEqual(error as! CameraSourcingError, CameraSourcingError.invalidCamera)
         }
         
-        XCTAssertEqual(nil, session.chosenCameraId)
+        XCTAssertEqual(nil, system.session.chosenCameraId)
     }
     
     func testWhenUserChoosesCamera_AndRepoDoesContainCamera_ThenCameraIsSetOnSession() {
-        dataSource.camerasToReturn = [Device(id: "test_id",
-                                             type: .telephotoCamera,
-                                             position: .back,
-                                             hasFlash: true,
-                                             isFlashOn: false,
-                                             zoomOptions: [0.5, 1, 2],
-                                             currentZoom: 1.0,
-                                             maxZoom: 10,
-                                             minZoom: 0.5)]
-        try? controller.set("test_id")
+        system.dataSource.camerasToReturn = [Device(id: "test_id",
+                                                    type: .telephotoCamera,
+                                                    position: .back,
+                                                    hasFlash: true,
+                                                    isFlashOn: false,
+                                                    zoomOptions: [0.5, 1, 2],
+                                                    currentZoom: 1.0,
+                                                    maxZoom: 10,
+                                                    minZoom: 0.5)]
+        try? system.camera.set("test_id")
         
-        XCTAssertEqual("test_id", session.chosenCameraId)
+        XCTAssertEqual("test_id", system.session.chosenCameraId)
     }
     
     func testWhenUserChoosesCamera_AndRepoDoesContainCamera_ThenAllPreviousInputsAreRemovedFromSession() {
-        dataSource.camerasToReturn = [Device(id: "test_id",
-                                             type: .telephotoCamera,
-                                             position: .back,
-                                             hasFlash: true,
-                                             isFlashOn: true,
-                                             zoomOptions: [0.5, 1, 2],
-                                             currentZoom: 1.0,
-                                             maxZoom: 10,
-                                             minZoom: 0.5)]
-        try? controller.set("test_id")
+        system.dataSource.camerasToReturn = [Device(id: "test_id",
+                                                    type: .telephotoCamera,
+                                                    position: .back,
+                                                    hasFlash: true,
+                                                    isFlashOn: true,
+                                                    zoomOptions: [0.5, 1, 2],
+                                                    currentZoom: 1.0,
+                                                    maxZoom: 10,
+                                                    minZoom: 0.5)]
+        try? system.camera.set("test_id")
         
-        XCTAssertEqual(1, session.removeAllInputsCalled)
+        XCTAssertEqual(1, system.session.removeAllInputsCalled)
     }
     
     func testWhenUserChoosesCamera_AndRepoDoesntContainCamera_ThenAllPreviousInputsArentRemovedFromSession() {
-        dataSource.camerasToReturn = [Device(id: "incorrect_test_id",
-                                             type: .telephotoCamera,
-                                             position: .back,
-                                             hasFlash: true,
-                                             isFlashOn: false,
-                                             zoomOptions: [0.5, 1, 2],
-                                             currentZoom: 1.0,
-                                             maxZoom: 10,
-                                             minZoom: 0.5)]
-        try? controller.set("test_id")
+        system.dataSource.camerasToReturn = [Device(id: "incorrect_test_id",
+                                                    type: .telephotoCamera,
+                                                    position: .back,
+                                                    hasFlash: true,
+                                                    isFlashOn: false,
+                                                    zoomOptions: [0.5, 1, 2],
+                                                    currentZoom: 1.0,
+                                                    maxZoom: 10,
+                                                    minZoom: 0.5)]
+        try? system.camera.set("test_id")
         
-        XCTAssertEqual(0, session.removeAllInputsCalled)
+        XCTAssertEqual(0, system.session.removeAllInputsCalled)
+    }
+    
+    func testWhenCameraIsSetSuccessfully_ThenViewIsUpdated() {
+        system.dataSource.camerasToReturn = [Device(id: "test_id",
+                                                    type: .telephotoCamera,
+                                                    position: .back,
+                                                    hasFlash: true,
+                                                    isFlashOn: false,
+                                                    zoomOptions: [0.5, 1, 2],
+                                                    currentZoom: 1.0,
+                                                    maxZoom: 10,
+                                                    minZoom: 0.5)]
+        try? system.camera.set("test_id")
+        
+        XCTAssertEqual(system.view.setCameraCalled, 1)
     }
 }
 

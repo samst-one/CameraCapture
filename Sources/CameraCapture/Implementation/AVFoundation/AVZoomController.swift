@@ -26,6 +26,5 @@ class AVZoomController: ZoomController {
         } catch {
             throw ZoomError.unableToLockCamera
         }
-
     }
 }

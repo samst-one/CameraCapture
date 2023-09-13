@@ -34,7 +34,6 @@ class AVFocusController: FocusController {
             
             device.unlockForConfiguration()
         } catch {
-            print(error.localizedDescription)
             throw error
         }
     }

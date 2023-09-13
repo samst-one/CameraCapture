@@ -2,22 +2,11 @@ import XCTest
 @testable import CameraCapture
 
 final class TakePhotoTests: XCTestCase {
-    let session = SpyCameraSession(hasCamera: true, hasStarted: true)
-    let cameraController = SpyCameraController()
-    var dataSource = MockDataSource()
-    var controller: DefaultCamera!
+    let system = System()
     
-    override func setUp() {
-        super.setUp()
-        controller = DefaultCameraFactory.make(dataSource: dataSource,
-                                               session: session,
-                                               controller: cameraController,
-                                               flashController: SpyFlashController(),
-                                               zoomController: SpyZoomController())
-    }
     
     func testWhenUserTakesPhoto_AndPhotoIsTakenSuccesfully_ThenCorrectDataIsReturned() {
-        controller.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+        system.camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
             switch result {
             case .failure:
                 XCTFail("Should expect success.")
@@ -28,8 +17,8 @@ final class TakePhotoTests: XCTestCase {
     }
     
     func testWhenUserTakesPhoto_AndErrorOccurs_ThenErrorIsReturned() {
-        cameraController.shouldReturnError = true
-        controller.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+        system.cameraController.shouldReturnError = true
+        system.camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, .unknown)
@@ -40,8 +29,8 @@ final class TakePhotoTests: XCTestCase {
     }
     
     func testWhenUserTakesPhoto_AndNoDataIsReturnedFromCapture_ThenErrorIsReturned() {
-        cameraController.shouldReturnData = false
-        controller.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+        system.cameraController.shouldReturnData = false
+        system.camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, .noImageReturned)
@@ -52,8 +41,8 @@ final class TakePhotoTests: XCTestCase {
     }
     
     func testWhenUserTakesPhoto_AndCameraIsntSet_ThenErrorIsReturned() {
-        session.hasCamera = false
-        controller.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+        system.session.hasCamera = false
+        system.camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, .noCameraSet)
@@ -64,8 +53,8 @@ final class TakePhotoTests: XCTestCase {
     }
     
     func testWhenUserTakesPhoto_AndSessionIsntStarted_ThenErrorIsReturned() {
-        session.hasStarted = false
-        controller.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
+        system.session.hasStarted = false
+        system.camera.takePhoto(with: CameraSettings(fileType: .jpeg)) { result in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error, .cameraNotStarted)

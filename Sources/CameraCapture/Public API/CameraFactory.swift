@@ -20,7 +20,7 @@ public enum CameraFactory {
         avCaptureSession.addOutput(photoOutput)
         let previewLayer = AVCaptureVideoPreviewLayer(session: avCaptureSession)
         previewLayer.videoGravity = .resizeAspect
-        
+                
         let cameraSession = AVCameraSession(captureSession: avCaptureSession)
         let cameraController = AVCameraController(photoOutput: photoOutput)
         let flashController = AVFlashController(session: avCaptureSession)
@@ -40,6 +40,10 @@ public enum CameraFactory {
         let startCameraUseCase = StartCameraUseCase(session: cameraSession)
         let setFlashStateUseCase = SetFlashStateUseCase(flashController: flashController,
                                                       session: cameraSession)
+        presenter.set(previewView)
+        
+        let setCameraObserver = PresenterSetCameraObserver(presenter: presenter)
+        setCameraUseCase.add(setCameraObserver)
         
         return DefaultCamera(previewView: previewView,
                              setCameraUseCase: setCameraUseCase,
