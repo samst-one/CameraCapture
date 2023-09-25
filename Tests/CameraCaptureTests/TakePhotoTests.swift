@@ -67,6 +67,10 @@ final class TakePhotoTests: XCTestCase {
 }
 
 class SpyCameraController: CameraController {
+    var currentRotation: CameraCapture.CameraOrientation?
+    func rotate(with orientation: CameraCapture.CameraOrientation) {
+        currentRotation = orientation
+    }
     
     var shouldReturnError: Bool = false
     var shouldReturnData: Bool = true

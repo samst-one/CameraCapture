@@ -1,4 +1,5 @@
 import AVFoundation
+import UIKit
 
 class AVCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
     
@@ -9,6 +10,19 @@ class AVCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        handler?.didCapturePhoto(photo.fileDataRepresentation(), error: error)
+        handler?.didCapturePhoto(photo.fileDataRepresentation(with: Customizer(photo: photo)), error: error)
+    }
+    
+    class Customizer: NSObject, AVCapturePhotoFileDataRepresentationCustomizer {
+        
+        private let photo: AVCapturePhoto
+        
+        init(photo: AVCapturePhoto) {
+            self.photo = photo
+        }
+        
+        func replacementMetadata(for photo: AVCapturePhoto) -> [String : Any]? {
+            return photo.metadata
+        }
     }
 }

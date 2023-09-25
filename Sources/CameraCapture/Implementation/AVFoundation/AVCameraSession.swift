@@ -42,7 +42,17 @@ class AVCameraSession: CameraSesion {
               let captureDeviceInput = try? AVCaptureDeviceInput(device: device) else {
             return
         }
-        captureSession.addInput(captureDeviceInput)
+        captureSession.sessionPreset = .high
+        if captureSession.canAddInput(captureDeviceInput) {
+            captureSession.addInput(captureDeviceInput)
+            if captureSession.canSetSessionPreset(.hd4K3840x2160) {
+                captureSession.sessionPreset = .hd4K3840x2160
+            } else if captureSession.canSetSessionPreset(.hd1920x1080) {
+                captureSession.sessionPreset = .hd1920x1080
+            } else {
+                captureSession.sessionPreset = .high
+            }
+        }
     }
     
     func start(completion: @MainActor @escaping () -> ()) {

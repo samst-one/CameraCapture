@@ -61,4 +61,5 @@ public protocol Camera {
     func zoom(to value: Double) throws
     
     func add(zoomObserver: ZoomObserver)
+        
 }

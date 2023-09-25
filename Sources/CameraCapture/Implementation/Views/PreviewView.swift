@@ -29,13 +29,14 @@ class PreviewView: UIView {
     }
     
     func setupOrientation() {
-        guard let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation else {
-            return
-        }
-        let videoOrientation: AVCaptureVideoOrientation = videoOrientation(viewOrientation: statusBarOrientation) ?? .portrait
-            
+        let currentDevice = UIDevice.current
+        let orientation: UIDeviceOrientation = currentDevice.orientation
+        let videoOrientation: AVCaptureVideoOrientation = videoOrientation(viewOrientation: orientation) ?? .portrait
+
         previewLayer.frame = layer.bounds
         previewLayer.connection?.videoOrientation = videoOrientation
+        
+        presenter.didRotateCamera(with: cameraOrientation(viewOrientation: orientation) ?? .portrait)
     }
     
     override func layoutSubviews() {
@@ -43,7 +44,17 @@ class PreviewView: UIView {
         setupOrientation()
     }
     
-    private func videoOrientation(viewOrientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation? {
+    private func videoOrientation(viewOrientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+        switch viewOrientation {
+        case .portraitUpsideDown: return .portraitUpsideDown
+        case .landscapeRight: return .landscapeLeft
+        case .landscapeLeft: return .landscapeRight
+        case .portrait: return .portrait
+        default: return nil
+        }
+    }
+    
+    private func cameraOrientation(viewOrientation: UIDeviceOrientation) -> CameraOrientation? {
         switch viewOrientation {
         case .portraitUpsideDown: return .portraitUpsideDown
         case .landscapeRight: return .landscapeRight
@@ -63,10 +74,8 @@ class PreviewView: UIView {
     @objc private func cameraViewTapped(_ gestureRecognizer: UITapGestureRecognizer) {
         let location = gestureRecognizer.location(in: self)
         showBox(at: location)
-        //        addFocusIndicatorView(at: location) // If you want to indicate it in the UI
         
         let captureDeviceLocation = previewLayer.captureDevicePointConverted(fromLayerPoint: location)
-        
         presenter.didFocus(at: captureDeviceLocation)
     }
     
@@ -106,13 +115,13 @@ class PreviewView: UIView {
 
         pulsing.repeatCount = 2
         pulsing.duration = 0.2
-        pulsing.beginTime = CACurrentMediaTime() + 0.3 // wait for the fade in to occur
+        pulsing.beginTime = CACurrentMediaTime() + 0.3
         
         let opacityFadeOut = CABasicAnimation(keyPath: "opacity")
         opacityFadeOut.fromValue = 1
         opacityFadeOut.toValue = 0
         opacityFadeOut.duration = 0.5
-        opacityFadeOut.beginTime = CACurrentMediaTime() + 1 // seconds
+        opacityFadeOut.beginTime = CACurrentMediaTime() + 1
         opacityFadeOut.isRemovedOnCompletion = false
         opacityFadeOut.fillMode = .forwards
         
@@ -121,9 +130,7 @@ class PreviewView: UIView {
         focusBoxLayer.add(pulsing, forKey: pulseKey)
         focusBoxLayer.add(opacityFadeOut, forKey: fadeOutKey)
     }
-    
-    // MARK: - Private Properties
-    
+        
     private lazy var focusBoxLayer: CALayer = {
         let box = CALayer()
         box.bounds = CGRect(x: 0, y: 0, width: 200, height: 200)

@@ -3,9 +3,11 @@ import AVFoundation
 protocol CameraController {
     func takePhoto(with settings: CameraSettings,
                    handler: CaptureHandler)
+    func rotate(with orientation: CameraOrientation)
 }
 
 class AVCameraController: CameraController {
+    
     private let photoOutput: AVCapturePhotoOutput
     private let delegate = AVCaptureDelegate()
 
@@ -19,6 +21,26 @@ class AVCameraController: CameraController {
         let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: CameraSettingsToAVSettings.adapt(settings: settings)])
         photoOutput.capturePhoto(with: settings,
                                  delegate: delegate)
+        
+    }
+    
+    func rotate(with orientation: CameraOrientation) {
+        photoOutput.connection(with: .video)?.videoOrientation = CameraOrientationToAVSettings.adapt(orientation: orientation)
+    }
+}
+
+enum CameraOrientationToAVSettings {
+    static func adapt(orientation: CameraOrientation) -> AVCaptureVideoOrientation {
+        switch orientation {
+        case .landscapeLeft:
+            return .landscapeRight
+        case .landscapeRight:
+            return .landscapeLeft
+        case .portrait:
+            return .portrait
+        case .portraitUpsideDown:
+            return .portrait
+        }
     }
 }
 

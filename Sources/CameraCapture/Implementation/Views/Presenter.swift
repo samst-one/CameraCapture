@@ -4,6 +4,7 @@ protocol Presenter {
     func didZoomTo(_ scale: CGFloat)
     func didFocus(at point: CGPoint)
     func didSetCamera()
+    func didRotateCamera(with orientation: CameraOrientation)
 }
 
 class DefaultPresenter: Presenter {
@@ -11,14 +12,17 @@ class DefaultPresenter: Presenter {
     private let setZoomUseCase: SetZoomUseCase
     private let retrieveSelectedCameras: RetrieveAvailableCamerasUseCase
     private let focusUseCase: FocusUseCase
+    private let rotateCameraUseCase: RotateCameraUseCase
     private var view: Viewable?
     
     init(setZoomUseCase: SetZoomUseCase,
          retrieveSelectedCameras: RetrieveAvailableCamerasUseCase,
-         focusUseCase: FocusUseCase) {
+         focusUseCase: FocusUseCase,
+         rotateCameraUseCase: RotateCameraUseCase) {
         self.setZoomUseCase = setZoomUseCase
         self.retrieveSelectedCameras = retrieveSelectedCameras
         self.focusUseCase = focusUseCase
+        self.rotateCameraUseCase = rotateCameraUseCase
     }
     
     func set(_ view: Viewable) {
@@ -40,5 +44,9 @@ class DefaultPresenter: Presenter {
     
     func didSetCamera() {
         view?.didSetCamera()
+    }
+    
+    func didRotateCamera(with orientation: CameraOrientation) {
+        rotateCameraUseCase.rotate(with: orientation)
     }
 }

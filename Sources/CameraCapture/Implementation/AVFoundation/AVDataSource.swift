@@ -15,13 +15,12 @@ class AVCaptureDeviceDataSource: DataSource {
     }
     
     var cameras: [Device] {
-        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [
-            .builtInDualCamera,
-            .builtInDualWideCamera,
-            .builtInTripleCamera,
-            .builtInWideAngleCamera,
-            .builtInTelephotoCamera,
-            .builtInUltraWideCamera],
+        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera,
+                                                                                    .builtInDualWideCamera,
+                                                                                    .builtInTripleCamera,
+                                                                                    .builtInWideAngleCamera,
+                                                                                    .builtInTelephotoCamera,
+                                                                                    .builtInUltraWideCamera],
                                                                       mediaType: AVMediaType.video,
                                                                       position: .unspecified)
         let cameras = deviceDiscoverySession.devices.compactMap { device in

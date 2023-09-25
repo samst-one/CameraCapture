@@ -4,16 +4,11 @@ import XCTest
 class FocusTests: XCTestCase {
     
     func testWhenUseRequestedFocus_ThenFocusIsPastToFocusController() {
-        let dataSource = MockDataSource()
-        let focusController = SpyFocusController()
-        let presenter = DefaultPresenter(setZoomUseCase: SetZoomUseCase(zoomController: SpyZoomController(),
-                                                                        dataSource: dataSource),
-                                         retrieveSelectedCameras: RetrieveAvailableCamerasUseCase(dataSource: dataSource),
-                                         focusUseCase: FocusUseCase(focusController: focusController))
+        let system = System()
         
-        presenter.didFocus(at: CGPoint(x: 100, y: 100))
+        system.presenter.didFocus(at: CGPoint(x: 100, y: 100))
         
-        XCTAssertEqual(focusController.focusPoint, CGPoint(x: 100, y: 100))
+        XCTAssertEqual(system.focusController.focusPoint, CGPoint(x: 100, y: 100))
     }
 }
 

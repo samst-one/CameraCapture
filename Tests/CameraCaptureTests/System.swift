@@ -24,7 +24,8 @@ class System {
         focusUseCase = FocusUseCase(focusController: focusController)
         presenter = DefaultPresenter(setZoomUseCase: setZoomUseCase,
                                      retrieveSelectedCameras: retrieveAvailableCamerasUseCase,
-                                     focusUseCase: focusUseCase)
+                                     focusUseCase: focusUseCase,
+                                     rotateCameraUseCase: RotateCameraUseCase(cameraController: cameraController))
         
         observer = PresenterSetCameraObserver(presenter: presenter)
         setCameraUseCase = SetCameraUseCase(cameraSesion: session,
