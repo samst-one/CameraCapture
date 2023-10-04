@@ -6,7 +6,7 @@ enum ZoomScaleToMultiplication {
         case .dualWideCamera, .tripleCamera:
             return scale * 0.5
         case .dualCamera:
-            return scale * 1.11
+            return scale
         default:
             return scale
         }
@@ -19,7 +19,7 @@ enum ZoomMultiplcationToScale {
         case .dualWideCamera, .tripleCamera:
             return multiplier / 0.5
         case .dualCamera:
-            return multiplier / 1.11
+            return multiplier
         default:
             return multiplier
         }
