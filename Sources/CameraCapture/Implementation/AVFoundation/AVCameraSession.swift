@@ -42,6 +42,7 @@ class AVCameraSession: CameraSesion {
               let captureDeviceInput = try? AVCaptureDeviceInput(device: device) else {
             return
         }
+        
         captureSession.sessionPreset = .high
         if captureSession.canAddInput(captureDeviceInput) {
             captureSession.addInput(captureDeviceInput)
