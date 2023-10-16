@@ -8,7 +8,7 @@ class SetFlashStateTests: XCTestCase {
     func testWhenUserTurnsFlashOn_AndThereIsNoSelectedCamera_ThenFlashIsntTurnedOn() {
         system.camera.setFlashState(isOn: true)
         
-        XCTAssertNil(system.flashController.flashOnDeviceId)
+        XCTAssertTrue(system.flashDataSource.flashDict.isEmpty)
     }
     
     func testWhenUserTurnsFlashOn_AndSelectedCameraHasFlash_ThenTurnFlashOn() {
@@ -24,7 +24,7 @@ class SetFlashStateTests: XCTestCase {
         
         system.camera.setFlashState(isOn: true)
         
-        XCTAssertEqual(system.flashController.flashOnDeviceId, "selected_id")
+        XCTAssertTrue(system.flashDataSource.flashDict["selected_id"]!)
     }
     
     func testWhenUserTurnsFlashOn_AndSelectedCameraDoesntHaveFlash_ThenTurnFlashIsntTurnedOn() {
@@ -40,7 +40,7 @@ class SetFlashStateTests: XCTestCase {
         
         system.camera.setFlashState(isOn: true)
         
-        XCTAssertNil(system.flashController.flashOnDeviceId)
+        XCTAssertTrue(system.flashDataSource.flashDict["selected_id"]!)
     }
     
     func testWhenUserTurnsFlashOff_AndSelectedCameraFlashIsOn_ThenTurnFlashOff() {
@@ -56,7 +56,7 @@ class SetFlashStateTests: XCTestCase {
         
         system.camera.setFlashState(isOn: false)
         
-        XCTAssertEqual(system.flashController.flashOffDeviceId, "selected_id")
+        XCTAssertFalse(system.flashDataSource.flashDict["selected_id"]!)
     }
     
     func testWhenUserTurnsFlashOff_AndSelectedCameraFlashIsOff_ThenFlashIsntTurnedOff() {
@@ -72,24 +72,25 @@ class SetFlashStateTests: XCTestCase {
         
         system.camera.setFlashState(isOn: false)
         
-        XCTAssertNil(system.flashController.flashOffDeviceId)
+        XCTAssertFalse(system.flashDataSource.flashDict["selected_id"]!)
     }
     
     func testWhenUserTurnsFlashOff_AndThereIsNoSelectedCamera_ThenFlashIsntTurnedOff() {
         system.camera.setFlashState(isOn: false)
         
-        XCTAssertNil(system.flashController.flashOffDeviceId)
+        XCTAssertTrue(system.flashDataSource.flashDict.isEmpty)
     }
 }
 
-class SpyFlashController: FlashController {
-    var flashOffDeviceId: String?
-    func turnOffFlash(for deviceId: String) {
-        flashOffDeviceId = deviceId
+class SpyFlashDataSource: FlashDataSource {
+    
+    var flashDict: [String: Bool] = [: ]
+    
+    func get(deviceId: String) -> Bool {
+        return flashDict[deviceId] ?? false
     }
     
-    var flashOnDeviceId: String?
-    func turnOnFlash(for deviceId: String) {
-        flashOnDeviceId = deviceId
+    func set(deviceId: String, isOn: Bool) {
+        flashDict[deviceId] = isOn
     }
 }

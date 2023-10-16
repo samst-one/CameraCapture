@@ -11,7 +11,7 @@ class System {
     let dataSource = MockDataSource()
     let session = SpyCameraSession(hasCamera: true, hasStarted: true)
     let cameraController = SpyCameraController()
-    let flashController = SpyFlashController()
+    let flashDataSource = SpyFlashDataSource()
     let zoomController = SpyZoomController()
     let focusController = SpyFocusController()
     
@@ -37,10 +37,11 @@ class System {
                                setCameraUseCase: setCameraUseCase,
                                retrieveCameraUseCase: retrieveAvailableCamerasUseCase,
                                takePhotosUseCase: TakePhotoUseCase(controller: cameraController,
-                                                                   session: session),
+                                                                   session: session,
+                                                                   flashDataSource: flashDataSource),
                                startCameraUseCase: StartCameraUseCase(session: session),
-                               setFlashStateUseCase: SetFlashStateUseCase(flashController: flashController,
-                                                                          session: session),
+                               setFlashStateUseCase: SetFlashStateUseCase(session: session,
+                                                                          dataSource: flashDataSource),
                                setZoomUseCase: SetZoomUseCase(zoomController: zoomController, dataSource: dataSource))
     }
 }

@@ -28,7 +28,7 @@ enum ZoomMultiplcationToScale {
 
 enum AVCaptureDeviceToCameraAdapter {
     
-    static func adapt(device: AVCaptureDevice) -> Device {
+    static func adapt(device: AVCaptureDevice, flashDataSource: FlashDataSource) -> Device {
         var zoomOptions: [Double] = []
         
         switch device.deviceType {
@@ -48,8 +48,8 @@ enum AVCaptureDeviceToCameraAdapter {
         return Device(id: device.uniqueID,
                       type: self.adapt(device: device.deviceType),
                       position: self.adapt(position: device.position),
-                      hasFlash: device.hasTorch,
-                      isFlashOn: device.isTorchActive,
+                      hasFlash: device.hasFlash,
+                      isFlashOn: flashDataSource.get(deviceId: device.uniqueID),
                       zoomOptions: zoomOptions,
                       currentZoom: ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.videoZoomFactor),
                       maxZoom: min(ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.maxAvailableVideoZoomFactor), 10),

@@ -20,11 +20,10 @@ public enum CameraFactory {
         avCaptureSession.addOutput(photoOutput)
         let previewLayer = AVCaptureVideoPreviewLayer(session: avCaptureSession)
         previewLayer.videoGravity = .resizeAspect
-                
-        let cameraSession = AVCameraSession(captureSession: avCaptureSession)
+        let flashDataSource = DefaultFlashDataSource()
+        let cameraSession = AVCameraSession(captureSession: avCaptureSession, flashDataSource: flashDataSource)
         let cameraController = AVCameraController(photoOutput: photoOutput)
-        let flashController = AVFlashController(session: avCaptureSession)
-        let dataSource = AVCaptureDeviceDataSource(captureSession: avCaptureSession)
+        let dataSource = AVCaptureDeviceDataSource(captureSession: avCaptureSession, flashDataSource: flashDataSource)
         let zoomController = AVZoomController(session: avCaptureSession)
         let setZoomUseCase = SetZoomUseCase(zoomController: zoomController,
                                             dataSource: dataSource)
@@ -37,10 +36,10 @@ public enum CameraFactory {
                                                 dataSource: dataSource)
         let previewView = PreviewView(previewLayer: previewLayer,
                                       presenter: presenter)
-        let takePhotosUseCase = TakePhotoUseCase(controller: cameraController, session: cameraSession)
+        let takePhotosUseCase = TakePhotoUseCase(controller: cameraController, session: cameraSession, flashDataSource: flashDataSource)
         let startCameraUseCase = StartCameraUseCase(session: cameraSession)
-        let setFlashStateUseCase = SetFlashStateUseCase(flashController: flashController,
-                                                      session: cameraSession)
+        let setFlashStateUseCase = SetFlashStateUseCase(session: cameraSession,
+                                                        dataSource: flashDataSource)
         presenter.set(previewView)
         
         let setCameraObserver = PresenterSetCameraObserver(presenter: presenter)

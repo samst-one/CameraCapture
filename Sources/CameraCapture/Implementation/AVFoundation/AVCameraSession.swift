@@ -11,6 +11,7 @@ protocol CameraSesion {
 
 class AVCameraSession: CameraSesion {
     private let captureSession: AVCaptureSession
+    private let flashDataSource: FlashDataSource
     
     var hasStarted: Bool {
         captureSession.isRunning
@@ -24,11 +25,13 @@ class AVCameraSession: CameraSesion {
         guard let camera = captureSession.inputs.first as? AVCaptureDeviceInput else {
             return nil
         }
-        return AVCaptureDeviceToCameraAdapter.adapt(device: camera.device)
+        return AVCaptureDeviceToCameraAdapter.adapt(device: camera.device, flashDataSource: flashDataSource)
     }
     
-    init(captureSession: AVCaptureSession) {
+    init(captureSession: AVCaptureSession,
+         flashDataSource: FlashDataSource) {
         self.captureSession = captureSession
+        self.flashDataSource = flashDataSource
     }
     
     func removeAllInputs() {

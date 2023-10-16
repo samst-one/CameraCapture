@@ -9,9 +9,12 @@ protocol DataSource {
 class AVCaptureDeviceDataSource: DataSource {
     
     private let captureSession: AVCaptureSession
-    
-    init(captureSession: AVCaptureSession) {
+    private let flashDataSource: FlashDataSource
+
+    init(captureSession: AVCaptureSession,
+         flashDataSource: FlashDataSource) {
         self.captureSession = captureSession
+        self.flashDataSource = flashDataSource
     }
     
     var cameras: [Device] {
@@ -24,7 +27,7 @@ class AVCaptureDeviceDataSource: DataSource {
                                                                       mediaType: AVMediaType.video,
                                                                       position: .unspecified)
         let cameras = deviceDiscoverySession.devices.compactMap { device in
-            return AVCaptureDeviceToCameraAdapter.adapt(device: device)
+            return AVCaptureDeviceToCameraAdapter.adapt(device: device, flashDataSource: flashDataSource)
         }
         
         return cameras
@@ -34,7 +37,7 @@ class AVCaptureDeviceDataSource: DataSource {
         guard let camera = captureSession.inputs.first as? AVCaptureDeviceInput else {
             return nil
         }
-        return AVCaptureDeviceToCameraAdapter.adapt(device: camera.device)
+        return AVCaptureDeviceToCameraAdapter.adapt(device: camera.device, flashDataSource: flashDataSource)
     }
     
     func getCamera(with id: String) -> Device? {
