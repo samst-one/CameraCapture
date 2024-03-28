@@ -26,7 +26,7 @@ https://github.com/SamStone92/Camera
 1. First we need to import the camera into our project, we do this by importing the framework
 
 ```swift
-import Camera
+import CameraCapture
 ```
 
 2. Next we need to create a ``Camera`` object. The ``Camera`` acts as the API for the package. To create the ``Camera``, we do:
