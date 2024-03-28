@@ -21,7 +21,7 @@ The API can be found in the ``Camera`` interface.
 Go to **File > Swift Packages > Add Package Dependency** and add the following URL:
 
 ```
-https://github.com/samst-one/Camera
+https://github.com/samst-one/CameraCapture
 ```
 
 ## Usage
