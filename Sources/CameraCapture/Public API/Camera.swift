@@ -54,8 +54,8 @@ public protocol Camera {
      */
     func takePhoto(with settings: CameraSettings, completion: @escaping (Result<Data, PhotoCaptureError>) -> ())
     
-    func setFlashState(isOn: Bool)
-    
+    func setFlashState(state: FlashState)
+
     var selectedCamera: Device? { get }
     
     func zoom(to value: Double) throws

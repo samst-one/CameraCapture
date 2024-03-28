@@ -1,17 +1,17 @@
 import Foundation
 
 protocol FlashDataSource {
-    func get(deviceId: String) -> Bool
-    func set(deviceId: String, isOn: Bool)
+    func get(deviceId: String) -> FlashState
+    func set(deviceId: String, state: FlashState)
 }
 
 class DefaultFlashDataSource: FlashDataSource {
     
-    func get(deviceId: String) -> Bool {
-        UserDefaults.standard.bool(forKey: "camera_flash")
+    func get(deviceId: String) -> FlashState {
+        FlashState(rawValue: UserDefaults.standard.integer(forKey: "camera_flash")) ?? .off
     }
     
-    func set(deviceId: String, isOn: Bool) {
-        UserDefaults.standard.set(isOn, forKey: "camera_flash")
+    func set(deviceId: String, state: FlashState) {
+        UserDefaults.standard.set(state.rawValue, forKey: "camera_flash")
     }
 }

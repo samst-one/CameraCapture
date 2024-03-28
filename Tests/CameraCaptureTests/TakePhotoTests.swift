@@ -4,13 +4,12 @@ import XCTest
 final class TakePhotoTests: XCTestCase {
     let system = System()
     
-    
     func testWhenUserTakesPhoto_AndPhotoIsTakenSuccesfully_ThenCorrectDataIsReturned() {
         system.session.spySelectedCamera = Device(id: "selected_id",
                                                   type: .telephotoCamera,
                                                   position: .back,
                                                   hasFlash: true,
-                                                  isFlashOn: true,
+                                                  flashState: .on,
                                                   zoomOptions: [0.5, 1, 2],
                                                   currentZoom: 1.0,
                                                   maxZoom: 10,
@@ -31,7 +30,7 @@ final class TakePhotoTests: XCTestCase {
                                                   type: .telephotoCamera,
                                                   position: .back,
                                                   hasFlash: true,
-                                                  isFlashOn: true,
+                                                  flashState: .on,
                                                   zoomOptions: [0.5, 1, 2],
                                                   currentZoom: 1.0,
                                                   maxZoom: 10,
@@ -52,7 +51,7 @@ final class TakePhotoTests: XCTestCase {
                                                   type: .telephotoCamera,
                                                   position: .back,
                                                   hasFlash: true,
-                                                  isFlashOn: true,
+                                                  flashState: .on,
                                                   zoomOptions: [0.5, 1, 2],
                                                   currentZoom: 1.0,
                                                   maxZoom: 10,
@@ -85,7 +84,7 @@ final class TakePhotoTests: XCTestCase {
                                                   type: .telephotoCamera,
                                                   position: .back,
                                                   hasFlash: true,
-                                                  isFlashOn: true,
+                                                  flashState: .on,
                                                   zoomOptions: [0.5, 1, 2],
                                                   currentZoom: 1.0,
                                                   maxZoom: 10,
@@ -113,7 +112,7 @@ class SpyCameraController: CameraController {
     var shouldReturnError: Bool = false
     var shouldReturnData: Bool = true
     
-    func takePhoto(with settings: CameraCapture.CameraSettings, flashOn: Bool, handler: CameraCapture.CaptureHandler) {
+    func takePhoto(with settings: CameraCapture.CameraSettings, flashState: FlashState, handler: CameraCapture.CaptureHandler) {
         handler.didCapturePhoto(shouldReturnData ? "test_data".data(using: .utf8) : nil,
                                 error: shouldReturnError ? NSError() : nil)
     }

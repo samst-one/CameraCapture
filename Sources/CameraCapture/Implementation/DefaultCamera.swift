@@ -36,8 +36,8 @@ class DefaultCamera: Camera {
         takePhotosUseCase.takePhoto(with: settings, completion: completion)
     }
     
-    func setFlashState(isOn: Bool) {
-        setFlashStateUseCase.setFlashState(isOn: isOn)
+    func setFlashState(state: FlashState) {
+        setFlashStateUseCase.setFlashState(state: state)
     }
     
     func start(completion: @MainActor @escaping () -> ()) {

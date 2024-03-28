@@ -2,7 +2,7 @@ import AVFoundation
 
 protocol CameraController {
     func takePhoto(with settings: CameraSettings,
-                   flashOn: Bool,
+                   flashState: FlashState,
                    handler: CaptureHandler)
     func rotate(with orientation: CameraOrientation)
 }
@@ -17,11 +17,11 @@ class AVCameraController: CameraController {
     }
     
     func takePhoto(with settings: CameraSettings,
-                   flashOn: Bool,
+                   flashState: FlashState,
                    handler: CaptureHandler) {
         delegate.set(handler)
         let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: CameraSettingsToAVSettings.adapt(settings: settings)])
-        settings.flashMode = flashOn ? .on : .off
+        settings.flashMode = CameraFlashToAVSettings.adapt(flashState: flashState)
         photoOutput.capturePhoto(with: settings,
                                  delegate: delegate)
         
@@ -29,6 +29,19 @@ class AVCameraController: CameraController {
     
     func rotate(with orientation: CameraOrientation) {
         photoOutput.connection(with: .video)?.videoOrientation = CameraOrientationToAVSettings.adapt(orientation: orientation)
+    }
+}
+
+enum CameraFlashToAVSettings {
+    static func adapt(flashState: FlashState) -> AVCaptureDevice.FlashMode {
+        switch flashState {
+            case .on:
+                return .on
+            case .off:
+                return .off
+            case .auto:
+                return .auto
+        }
     }
 }
 

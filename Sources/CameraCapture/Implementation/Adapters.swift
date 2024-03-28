@@ -49,7 +49,7 @@ enum AVCaptureDeviceToCameraAdapter {
                       type: self.adapt(device: device.deviceType),
                       position: self.adapt(position: device.position),
                       hasFlash: device.hasFlash,
-                      isFlashOn: flashDataSource.get(deviceId: device.uniqueID),
+                      flashState: flashDataSource.get(deviceId: device.uniqueID),
                       zoomOptions: zoomOptions,
                       currentZoom: ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.videoZoomFactor),
                       maxZoom: min(ZoomScaleToMultiplication.adapt(deviceType: self.adapt(device: device.deviceType), scale: device.maxAvailableVideoZoomFactor), 10),

@@ -11,10 +11,10 @@ class SetFlashStateUseCase {
         self.dataSource = dataSource
     }
     
-    func setFlashState(isOn: Bool) {
+    func setFlashState(state: FlashState) {
         guard let selectedCamera = session.selectedCamera else {
             return
         }
-        dataSource.set(deviceId: selectedCamera.id, isOn: isOn)
+        dataSource.set(deviceId: selectedCamera.id, state: state)
     }
 }

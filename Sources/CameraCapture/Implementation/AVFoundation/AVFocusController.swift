@@ -18,7 +18,7 @@ class AVFocusController: FocusController {
         }
         
         let device = camera.device
-        
+
         guard device.isFocusPointOfInterestSupported, device.isExposurePointOfInterestSupported else {
             return
         }

@@ -9,7 +9,7 @@ public struct Device {
     public let type: DeviceType
     public let position: DevicePosition
     public let hasFlash: Bool
-    public let isFlashOn: Bool
+    public let flashState: FlashState
     public let zoomOptions: [Double]
     public let currentZoom: Double
     public let maxZoom: Double
@@ -36,4 +36,10 @@ public enum DeviceType {
     case telephotoCamera
     case ultraWideCamera
     case unspecified
+}
+
+public enum FlashState: Int {
+    case on
+    case off
+    case auto
 }

@@ -23,7 +23,7 @@ class TakePhotoUseCase {
 
         if session.hasStarted {
             captureHandler.set(completion)
-            controller.takePhoto(with: settings, flashOn: flashDataSource.get(deviceId: selectedCamera.id), handler: captureHandler)
+            controller.takePhoto(with: settings, flashState: flashDataSource.get(deviceId: selectedCamera.id), handler: captureHandler)
         } else {
             completion(.failure(.cameraNotStarted))
         }

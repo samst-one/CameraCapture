@@ -35,7 +35,7 @@ class PreviewView: UIView {
 
         previewLayer.frame = layer.bounds
         previewLayer.connection?.videoOrientation = videoOrientation
-        
+
         presenter.didRotateCamera(with: cameraOrientation(viewOrientation: orientation) ?? .portrait)
     }
     
