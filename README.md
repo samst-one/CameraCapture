@@ -3,16 +3,13 @@
 [![A badge showing the Swift Compatibility of the project.](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsamst-one%2FCamera%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/samst-one/Camera)
 [![A badge showing the platform compatibility of the project.](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsamst-one%2FCamera%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/samst-one/Camera)
 
-A package for interacting with the cameras in iOS. Developed by [Sam Stone](https://samst.one).
-
 ## Overview
 
-A package for interacting with the cameras in iOS, with the following features:
+A package that hopes to provide a simplified API for interacting with the cameras in iOS, with the following features:
 - Displaying the camera preview.
 - Taking a picture.
 - Setting the camera to take the picture from.
-
-The other aim of this project is to provide a well tested solution to this project, which bases itself on Clean Architecture, pushing technology concerns to the boundaries and testing everything in-between.
+- Setting the flash state.
 
 The API can be found in the ``Camera`` interface.
 
